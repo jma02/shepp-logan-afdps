@@ -35,4 +35,8 @@ The code is structured as follows:
 - `src/forward_operator`: contains the forward operator code
 - `src/training`: contains the training code
 - `src/scripts`: contains the scripts for generating the dataset and training the model
-    
+
+I'll add a notebook soon that should be runnable with
+```bash
+pdm run jupyter notebook
+```
