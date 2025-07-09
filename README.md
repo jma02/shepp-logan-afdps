@@ -34,6 +34,7 @@ or
 ```bash
 python src/scripts/generate_dataset.py
 ```
+and you can run
 ```bash
 pdm run python src/training/train_score.py
 ```
