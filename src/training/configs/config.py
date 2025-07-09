@@ -14,20 +14,19 @@
 # limitations under the License.
 
 # Lint as: python3
-"""Training NCSN++ on Shepp-Logan."""
+"""Training DDPM with VP SDE."""
 
-from training.configs.default_configs import get_default_configs
+from configs.default_configs import get_default_configs
 
 
 def get_config():
   config = get_default_configs()
+
   # training
   training = config.training
   training.sde = 'vpsde'
   training.continuous = True
-  training.n_iters = 9500
   training.reduce_mean = True
-  training.learning_rate = 0.001
 
   # sampling
   sampling = config.sampling
@@ -38,36 +37,19 @@ def get_config():
   # data
   data = config.data
   data.centered = True
-  data.num_channels = 1
-  # Song uses both of these in different models. I'll keep both for compatibility.
-  data.channels = 1
-  
 
   # model
   model = config.model
-  model.name = 'ncsnv2_128'
-  model.fourier_scale = 16
+  model.name = 'ddpm'
   model.scale_by_sigma = False
   model.ema_rate = 0.9999
   model.normalization = 'GroupNorm'
   model.nonlinearity = 'swish'
-  # Let's try not to kill the GPUs
-  model.nf = 16
+  model.nf = 128
   model.ch_mult = (1, 2, 2, 2)
-  model.num_res_blocks = 8
+  model.num_res_blocks = 2
   model.attn_resolutions = (16,)
   model.resamp_with_conv = True
   model.conditional = True
-  model.fir = True
-  model.fir_kernel = [1, 3, 3, 1]
-  model.skip_rescale = True
-  model.resblock_type = 'biggan'
-  model.progressive = 'none'
-  model.progressive_input = 'residual'
-  model.progressive_combine = 'sum'
-  model.attention_type = 'ddpm'
-  model.embedding_type = 'positional'
-  model.init_scale = 0.0
-  model.conv_size = 3
 
   return config

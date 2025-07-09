@@ -16,7 +16,7 @@ to begin developing and testing the code.
 - (07/09/2025: Looks like the commands above are more stable/reliable than `pdm` anyways.)
 - If you want to use Song's `ncsnpp` architecture, you need to make sure your Python installation has
 development headers enabled, since Song is fancy, and compiles his own cuda/C++ code.
-- I recommend just using `ncsnv2`, since `ncsnpp` is very over engineered for our problem.
+- I recommend just using `ncsnv2` or `ddpm` (I don't know why the CS people, or Song call it that, at a cursory glance, `ddpm` is just a NN architecture, not unique to the DDPM algorithm), since `ncsnpp` is very over engineered for our problem.
 You can change this in `training/configs/config.py`.
 
 To install `pdm`, you can follow the instructions on [https://pdm-project.org/en/latest/](https://pdm-project.org/en/latest/). If you don't want to do this, generally remove the prefixed `pdm run` from each command.
