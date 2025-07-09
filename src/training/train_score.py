@@ -22,8 +22,7 @@ import os
 import time
 import torch
 import numpy as np
-
-import logging
+from tqdm import tqdm
 from torch.utils.data import DataLoader
 from torchvision.utils import make_grid, save_image
 from sdes.sde import VPSDE, subVPSDE, VESDE
@@ -114,59 +113,77 @@ def train(config=get_config(), workdir="shepp-logan-score"):
 
   num_train_steps = config.training.n_iters
 
-  # In case there are multiple hosts (e.g., TPU pods), only log to host 0
-  logging.info("Starting training loop at step %d." % (initial_step,))
+  wandb.log({"initial_step": initial_step}, step=initial_step)
+  pbar = tqdm(range(initial_step, num_train_steps + 1), 
+              initial=initial_step, 
+              total=num_train_steps,
+              desc="Training",
+              unit="step")
+  
+  for step in pbar:
+      # Get batch and move to device
+      batch = next(train_iter)['image'].to(config.device)
+      batch = scaler(batch)  # Apply data scaling
+      
+      # Execute one training step
+      loss = train_step_fn(state, batch)
+      
+      # Update progress bar
+      pbar.set_postfix({
+          'loss': f'{loss.item():.3e}',
+          'step': f'{step}/{num_train_steps}'
+      })
+      
+      if step % config.training.log_freq == 0:
+          wandb.log({"training_loss": loss.item()}, step=step)
 
-  for step in range(initial_step, num_train_steps + 1):
-    # Get batch and move to device
-    batch = next(train_iter)['image'].to(config.device)
-    batch = scaler(batch)  # Apply data scaling
-    # Execute one training step
-    loss = train_step_fn(state, batch)
-    if step % config.training.log_freq == 0:
-      logging.info("step: %d, training_loss: %.5e" % (step, loss.item()))
-      wandb.log({"training_loss": loss.item()}, step=step)
+      # Save a temporary checkpoint to resume training after pre-emption periodically
+      if step != 0 and step % config.training.snapshot_freq_for_preemption == 0:
+          save_checkpoint(checkpoint_meta_dir, state)
 
-    # Save a temporary checkpoint to resume training after pre-emption periodically
-    if step != 0 and step % config.training.snapshot_freq_for_preemption == 0:
-      save_checkpoint(checkpoint_meta_dir, state)
+      # Report the loss on an evaluation dataset periodically
+      if step % config.training.eval_freq == 0:
+          eval_batch = next(eval_iter)['image'].to(config.device)
+          eval_batch = scaler(eval_batch)  # Apply data scaling
+          eval_loss = eval_step_fn(state, eval_batch)
+          wandb.log({"eval_loss": eval_loss.item()}, step=step)
+          pbar.set_postfix({
+              'loss': f'{loss.item():.3e}',
+              'eval_loss': f'{eval_loss.item():.3e}',
+              'step': f'{step}/{num_train_steps}'
+          })
 
-    # Report the loss on an evaluation dataset periodically
-    if step % config.training.eval_freq == 0:
-      eval_batch = next(eval_iter)['image'].to(config.device)
-      eval_batch = scaler(eval_batch)  # Apply data scaling
-      eval_loss = eval_step_fn(state, eval_batch)
-      logging.info("step: %d, eval_loss: %.5e" % (step, eval_loss.item()))
-      wandb.log({"eval_loss": eval_loss.item()}, step=step)
+      # Save a checkpoint periodically and generate samples if needed
+      if step != 0 and step % config.training.snapshot_freq == 0 or step == num_train_steps:
+          # Save the checkpoint.
+          save_step = step // config.training.snapshot_freq
+          save_checkpoint(os.path.join(checkpoint_dir, f'checkpoint_{save_step}.pth'), state)
 
-    # Save a checkpoint periodically and generate samples if needed
-    if step != 0 and step % config.training.snapshot_freq == 0 or step == num_train_steps:
-      # Save the checkpoint.
-      save_step = step // config.training.snapshot_freq
-      save_checkpoint(os.path.join(checkpoint_dir, f'checkpoint_{save_step}.pth'), state)
-
-      # Generate and save samples
-      if config.training.snapshot_sampling:
-        ema.store(score_model.parameters())
-        ema.copy_to(score_model.parameters())
-        sample, n = sampling_fn(score_model)
-        ema.restore(score_model.parameters())
-        this_sample_dir = os.path.join(sample_dir, "iter_{}".format(step))
-        os.makedirs(this_sample_dir, exist_ok=True)
-        nrow = int(np.sqrt(sample.shape[0]))
-        image_grid = make_grid(sample, nrow, padding=2)
-        sample = np.clip(sample.permute(0, 2, 3, 1).cpu().numpy() * 255, 0, 255).astype(np.uint8)
-        # Save numpy array using torch
-        torch.save(sample, os.path.join(this_sample_dir, "sample.pt"))
-        
-        # Save image grid using torchvision
-        sample_path = os.path.join(this_sample_dir, "sample.png")
-        save_image(image_grid, sample_path)
-        
-        # Log sample images to wandb
-        if step % config.training.log_img_freq == 0:
-          wandb.log({"samples": [wandb.Image(sample_path, caption=f"Step {step}")]}, step=step)
-
+          # Generate and save samples
+          if config.training.snapshot_sampling:
+              ema.store(score_model.parameters())
+              ema.copy_to(score_model.parameters())
+              sample, n = sampling_fn(score_model)
+              ema.restore(score_model.parameters())
+              this_sample_dir = os.path.join(sample_dir, "iter_{}".format(step))
+              os.makedirs(this_sample_dir, exist_ok=True)
+              nrow = int(np.sqrt(sample.shape[0]))
+              image_grid = make_grid(sample, nrow, padding=2)
+              sample = np.clip(sample.permute(0, 2, 3, 1).cpu().numpy() * 255, 0, 255).astype(np.uint8)
+              
+              # Save numpy array using torch
+              torch.save(sample, os.path.join(this_sample_dir, "sample.pt"))
+              
+              # Save image grid using torchvision
+              sample_path = os.path.join(this_sample_dir, "sample.png")
+              save_image(image_grid, sample_path)
+              
+              # Log sample images to wandb
+              if step % config.training.log_img_freq == 0:
+                  wandb.log({"samples": [wandb.Image(sample_path, caption=f"Step {step}")]}, step=step)
+  
+  # Close the progress bar when done
+  pbar.close()
 def main(config=get_config(), workdir="shepp-logan-score"):
     train(config, workdir);
 
