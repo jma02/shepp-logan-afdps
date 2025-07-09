@@ -1,4 +1,5 @@
 # Shepp-Logan like phantom dataset + AFDPS
+Much of the score matching code comes from [https://github.com/yang-song/score_sde_pytorch](https://github.com/yang-song/score_sde_pytorch).   
 
 This repository contains the code for generating a Shepp-Logan like phantom dataset and training an AFDPS model on it ([https://arxiv.org/pdf/2506.03979](https://arxiv.org/pdf/2506.03979)).
 
@@ -12,38 +13,44 @@ pip install -e .
 ```
 to begin developing and testing the code. 
 
-(07/09/2025: Looks like the commands above are more stable/reliable than `pdm` anyways.)
+- (07/09/2025: Looks like the commands above are more stable/reliable than `pdm` anyways.)
+- If you want to use Song's `ncsnpp` architecture, you need to make sure your Python installation has
+development headers enabled, since Song is fancy, and compiles his own cuda/C++ code.
 
-(My side note on `pdm` is it's at the least able to resolve dependencies reliably, but it's actual implementation of virtual environments is a little iffy. See a similar pain point with a competing package manager `poetry`: [here](https://discuss.pytorch.org/t/pytorch-cannot-find-libcudnn/205696). You can always just use `pdm` to resolve dependencies, and then use `python -m venv ./venv` to create a virtual environment. This has worked well for me, and when `pdm` virtual environments work, they work well.¯\_(ツ)_/¯ )
-- I think that my personal issues with `pdm` come from our GPU's oneAPI environment. Oh well.
-- Song's code requires `ninja` and `python` with development headers. Already a headache to deal with.
-
-
-To install `pdm`, you can follow the instructions on [https://pdm-project.org/en/latest/](https://pdm-project.org/en/latest/). 
+To install `pdm`, you can follow the instructions on [https://pdm-project.org/en/latest/](https://pdm-project.org/en/latest/). If you don't want to do this, generally remove the prefixed `pdm run` from each command.
 Once installed, run 
 ```bash
 pdm install
 ```
-to install the dependencies.
+to install the dependencies. (Or go with the venv commands above.)
 
-To run the code, you can use 
+To generate the data, run
 ```bash
 pdm run python scripts/generate_dataset.py
 ```
-to generate the dataset, and 
+or 
+```bash
+python scripts/generate_dataset.py
+```
 ```bash
 pdm run python training/train_score.py
 ```
+or 
+```bash
+python training/train_score.py
+```
 to train the model.
-
-The code is structured as follows:
-
-- `src/core`: contains the core code for the AFDPS model
-- `src/forward_operator`: contains the forward operator code
-- `src/training`: contains the training code
-- `src/scripts`: contains the scripts for generating the dataset and training the model
 
 I'll add a notebook soon that should be runnable with
 ```bash
 pdm run jupyter notebook
 ```
+or 
+```bash
+jupyter notebook
+```
+
+# Appendix
+- (My side note on `pdm` is it's at the least able to resolve dependencies reliably, but it's actual implementation of virtual environments is a little iffy. See a similar pain point with a competing package manager `poetry`: [here](https://discuss.pytorch.org/t/pytorch-cannot-find-libcudnn/205696). You can always just use `pdm` to resolve dependencies, and then use `python -m venv ./venv` to create a virtual environment. This has worked well for me, and when `pdm` virtual environments work, they work well.¯\_(ツ)_/¯ )
+
+- I think that my personal issues with `pdm` come from our GPU's oneAPI environment. Oh well.
