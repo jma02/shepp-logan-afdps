@@ -1,10 +1,10 @@
 torch>=2.7.1
 cmocean>=4.0.3
-matplotlib>=3.10.3
-numpy>=2.3.1
-scikit-image>=0.25.2
+matplotlib>=3.9.4
+numpy>=2.0.2
+scikit-image>=0.24.0
 tqdm>=4.67.1
 wandb>=0.21.0
-scipy>=1.16.0
-ml-collections>=1.1.0
+scipy>=1.13.1
+ml-collections>=0.1.1
 torchvision>=0.22.1

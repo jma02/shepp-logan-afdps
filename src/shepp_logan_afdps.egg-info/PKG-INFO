@@ -8,13 +8,13 @@ Requires-Python: >=3.9
 Description-Content-Type: text/markdown
 Requires-Dist: torch>=2.7.1
 Requires-Dist: cmocean>=4.0.3
-Requires-Dist: matplotlib>=3.10.3
-Requires-Dist: numpy>=2.3.1
-Requires-Dist: scikit-image>=0.25.2
+Requires-Dist: matplotlib>=3.9.4
+Requires-Dist: numpy>=2.0.2
+Requires-Dist: scikit-image>=0.24.0
 Requires-Dist: tqdm>=4.67.1
 Requires-Dist: wandb>=0.21.0
-Requires-Dist: scipy>=1.16.0
-Requires-Dist: ml-collections>=1.1.0
+Requires-Dist: scipy>=1.13.1
+Requires-Dist: ml-collections>=0.1.1
 Requires-Dist: torchvision>=0.22.1
 
 # Shepp-Logan like phantom dataset + AFDPS
