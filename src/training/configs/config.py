@@ -39,6 +39,9 @@ def get_config():
   data = config.data
   data.centered = True
   data.num_channels = 1
+  # Song uses both of these in different models. I'll keep both for compatibility.
+  data.channels = 1
+  
 
   # model
   model = config.model
