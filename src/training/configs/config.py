@@ -27,6 +27,7 @@ def get_config():
   training.sde = 'vpsde'
   training.continuous = True
   training.reduce_mean = True
+  training.learning_rate = 1e-4
 
   # sampling
   sampling = config.sampling
