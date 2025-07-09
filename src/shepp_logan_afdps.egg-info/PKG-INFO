@@ -1,0 +1,61 @@
+Metadata-Version: 2.4
+Name: shepp-logan-afdps
+Version: 0.1.0
+Summary: Testing afdps on Shepp Logan dataset
+Author-email: Jonathan Ma <johnma@udel.edu>
+License: shepp-logan-afdps
+Requires-Python: ==3.13.*
+Description-Content-Type: text/markdown
+Requires-Dist: torch>=2.7.1
+Requires-Dist: cmocean>=4.0.3
+Requires-Dist: matplotlib>=3.10.3
+Requires-Dist: numpy>=2.3.1
+Requires-Dist: scikit-image>=0.25.2
+Requires-Dist: tqdm>=4.67.1
+Requires-Dist: wandb>=0.21.0
+Requires-Dist: scipy>=1.16.0
+Requires-Dist: ml-collections>=1.1.0
+Requires-Dist: torchvision>=0.22.1
+
+# Shepp-Logan like phantom dataset + AFDPS
+
+This repository contains the code for generating a Shepp-Logan like phantom dataset and training an AFDPS model on it ([https://arxiv.org/pdf/2506.03979](https://arxiv.org/pdf/2506.03979)).
+
+This is a `pdm` project. 
+To run it, it's very easy to use `pdm` to install the dependencies and run the code. 
+You can of course try to run
+```
+python -m venv ./venv
+source ./venv/bin/activate
+pip install -e .
+```
+although I haven't tried this.
+
+To install `pdm`, you can follow the instructions on [https://pdm-project.org/en/latest/](https://pdm-project.org/en/latest/). 
+Once installed, run 
+```bash
+pdm install
+```
+to install the dependencies.
+
+To run the code, you can use 
+```bash
+pdm run python scripts/generate_dataset.py
+```
+to generate the dataset, and 
+```bash
+pdm run python scripts/train_model.py
+```
+to train the model.
+
+The code is structured as follows:
+
+- `src/core`: contains the core code for the AFDPS model
+- `src/forward_operator`: contains the forward operator code
+- `src/training`: contains the training code
+- `src/scripts`: contains the scripts for generating the dataset and training the model
+
+I'll add a notebook soon that should be runnable with
+```bash
+pdm run jupyter notebook
+```
