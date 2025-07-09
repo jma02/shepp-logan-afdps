@@ -29,7 +29,7 @@ from torchvision.utils import make_grid, save_image
 from sdes.sde import VPSDE, subVPSDE, VESDE
 
 # Keep the import below to register the models in our runtime
-from core.advanced_models import ddpm, ncsnv2 #ncsnpp
+from core.advanced_models import score_unet 
 
 from training.ema import ExponentialMovingAverage
 from training.checkpointing import save_checkpoint, restore_checkpoint
@@ -93,6 +93,7 @@ def train(config=get_config(), workdir="shepp-logan-score"):
   else:
     raise NotImplementedError(f"SDE {config.training.sde} unknown.")
 
+  config.sde_fn = sde
   # Build one-step training and evaluation functions
   optimize_fn = losses.optimization_manager(config)
   continuous = config.training.continuous

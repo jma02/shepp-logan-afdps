@@ -4,6 +4,7 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 import numpy as np
+from core.advanced_models.utils import register_model
 
 class GaussianFourierProjection(nn.Module):
   """Gaussian random features for encoding time steps."""  
@@ -26,10 +27,11 @@ class Dense(nn.Module):
     return self.dense(x)[..., None, None]
 
 
+@register_model(name='score_unet')
 class ScoreNet(nn.Module):
   """A time-dependent score-based model built upon U-Net architecture."""
 
-  def __init__(self, marginal_prob_std, channels=[32, 64, 128, 256], embed_dim=256):
+  def __init__(self, config, channels=[32, 64, 128, 256], embed_dim=256):
     """Initialize a time-dependent score-based network.
 
     Args:
@@ -40,6 +42,7 @@ class ScoreNet(nn.Module):
     """
     super().__init__()
     # Gaussian random feature embedding layer for time
+    self.config = config
     self.embed = nn.Sequential(GaussianFourierProjection(embed_dim=embed_dim),
          nn.Linear(embed_dim, embed_dim))
     # Encoding layers where the resolution decreases
@@ -57,7 +60,7 @@ class ScoreNet(nn.Module):
     self.gnorm4 = nn.GroupNorm(32, num_channels=channels[3])    
 
     # Decoding layers where the resolution increases
-    self.tconv4 = nn.ConvTranspose2d(channels[3], channels[2], 3, stride=2, bias=False)
+    self.tconv4 = nn.ConvTranspose2d(channels[3], channels[2], 3, stride=2, bias=False, output_padding=1)
     self.dense5 = Dense(embed_dim, channels[2])
     self.tgnorm4 = nn.GroupNorm(32, num_channels=channels[2])
     self.tconv3 = nn.ConvTranspose2d(channels[2] + channels[2], channels[1], 3, stride=2, bias=False, output_padding=1)    
@@ -70,7 +73,6 @@ class ScoreNet(nn.Module):
     
     # The swish activation function
     self.act = lambda x: x * torch.sigmoid(x)
-    self.marginal_prob_std = marginal_prob_std
   
   def forward(self, x, t): 
     # Obtain the Gaussian random feature embedding for t   
@@ -112,5 +114,7 @@ class ScoreNet(nn.Module):
     h = self.tconv1(torch.cat([h, h1], dim=1))
 
     # Normalize output
-    h = h / self.marginal_prob_std(t)[:, None, None, None]
+    marginal_prob_std = self.config.sde_fn.marginal_prob(x, t)[1]
+    marginal_prob_std = marginal_prob_std.reshape(-1, 1, 1, 1)
+    h = h / marginal_prob_std
     return h

@@ -19,11 +19,9 @@ class PhantomsDataset(Dataset):
         # Load the phantoms data
         self.images = torch.load(data_path)  # Expected shape: [10000, 128, 128]
         
-
         # Add channel dimension if needed (from [N, H, W] to [N, C, H, W])
         if self.images.dim() == 3:
             self.images = self.images.unsqueeze(1)  # Add channel dimension
-        
         # Split into train/val/test (80/10/10)
         n = len(self.images)
         train_size = int(0.8 * n)

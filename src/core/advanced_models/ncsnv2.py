@@ -150,16 +150,16 @@ class NCSN(nn.Module):
 
     self.res1 = nn.ModuleList([
       ConditionalResidualBlock(self.nf, self.nf, config.model.num_scales, resample=None, act=act,
-                               normalization=self.norm),
+                               normalization=self.norm, dilation=1),
       ConditionalResidualBlock(self.nf, self.nf, config.model.num_scales, resample=None, act=act,
-                               normalization=self.norm)]
+                               normalization=self.norm, dilation=1)]
     )
 
     self.res2 = nn.ModuleList([
       ConditionalResidualBlock(self.nf, 2 * self.nf, config.model.num_scales, resample='down', act=act,
-                               normalization=self.norm),
+                               normalization=self.norm, dilation=1),
       ConditionalResidualBlock(2 * self.nf, 2 * self.nf, config.model.num_scales, resample=None, act=act,
-                               normalization=self.norm)]
+                               normalization=self.norm, dilation=1)]
     )
 
     self.res3 = nn.ModuleList([

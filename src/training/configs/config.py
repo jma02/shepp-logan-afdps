@@ -21,35 +21,43 @@ from configs.default_configs import get_default_configs
 
 def get_config():
   config = get_default_configs()
-
   # training
   training = config.training
+  training.batch_size = 128
   training.sde = 'vpsde'
   training.continuous = True
-  training.reduce_mean = True
-
   # sampling
   sampling = config.sampling
   sampling.method = 'pc'
-  sampling.predictor = 'euler_maruyama'
-  sampling.corrector = 'none'
-
+  sampling.predictor = 'none'
+  sampling.corrector = 'ald'
+  sampling.n_steps_each = 3
+  sampling.snr = 0.095
   # data
   data = config.data
-  data.centered = True
-
+  data.category = 'bedroom'
+  data.image_size = 128
   # model
   model = config.model
-  model.name = 'ddpm'
-  model.scale_by_sigma = False
+  model.name = 'score_unet'
+  model.scale_by_sigma = True
+  model.sigma_max = 190
+  model.num_scales = 1086
   model.ema_rate = 0.9999
-  model.normalization = 'GroupNorm'
-  model.nonlinearity = 'swish'
-  model.nf = 32
-  model.ch_mult = (1, 2, 2, 2)
-  model.num_res_blocks = 2
-  model.attn_resolutions = (16,)
-  model.resamp_with_conv = True
-  model.conditional = True
+  model.sigma_min = 0.01
+  model.normalization = 'InstanceNorm++'
+  model.nonlinearity = 'elu'
+  model.nf = 16
+  model.interpolation = 'bilinear'
+  # optim
+  optim = config.optim
+  optim.weight_decay = 0
+  optim.optimizer = 'Adam'
+  optim.lr = 1e-4
+  optim.beta1 = 0.9
+  optim.amsgrad = False
+  optim.eps = 1e-8
+  optim.warmup = 0
+  optim.grad_clip = -1
 
   return config
