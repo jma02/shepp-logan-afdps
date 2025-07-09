@@ -7,8 +7,9 @@ def get_default_configs():
   # training
   config.training = training = ml_collections.ConfigDict()
   config.training.batch_size = 128
-  training.n_iters = 1300001
-  training.snapshot_freq = 50000
+  training.n_iters = 130000
+  training.snapshot_freq = 10000
+  training.learning_rate = 2e-4
   training.log_freq = 50
   training.eval_freq = 100
   ## store additional checkpoints for preemption in cloud computing environments
@@ -40,11 +41,12 @@ def get_default_configs():
   # data
   config.data = data = ml_collections.ConfigDict()
   data.dataset = 'CIFAR10' # Should be deprecated in our code
-  data.image_size = 32
+  data.image_size = 128
   data.random_flip = True
   data.centered = False
   data.uniform_dequantization = False
-  data.num_channels = 3 
+  data.num_channels = 1
+  data.channels = 1
 
   # model
   config.model = model = ml_collections.ConfigDict()
