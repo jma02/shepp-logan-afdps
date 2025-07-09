@@ -28,18 +28,18 @@ to install the dependencies. (Or go with the venv commands above.)
 
 To generate the data, run
 ```bash
-pdm run python scripts/generate_dataset.py
+pdm run python src/scripts/generate_dataset.py
 ```
 or 
 ```bash
-python scripts/generate_dataset.py
+python src/scripts/generate_dataset.py
 ```
 ```bash
-pdm run python training/train_score.py
+pdm run python src/training/train_score.py
 ```
 or 
 ```bash
-python training/train_score.py
+python src/training/train_score.py
 ```
 to train the model.
 
