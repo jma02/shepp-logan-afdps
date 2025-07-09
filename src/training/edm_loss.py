@@ -1,3 +1,4 @@
+# Might be used, might not
 #https://github.com/NVlabs/edm/blob/main/training/loss.py
 # Copyright (c) 2022, NVIDIA CORPORATION & AFFILIATES. All rights reserved.
 #

@@ -4,7 +4,7 @@ Version: 0.1.0
 Summary: Testing afdps on Shepp Logan dataset
 Author-email: Jonathan Ma <johnma@udel.edu>
 License: shepp-logan-afdps
-Requires-Python: ==3.13.*
+Requires-Python: >=3.9
 Description-Content-Type: text/markdown
 Requires-Dist: torch>=2.7.1
 Requires-Dist: cmocean>=4.0.3

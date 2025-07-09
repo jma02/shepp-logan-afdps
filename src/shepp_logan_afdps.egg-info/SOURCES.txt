@@ -8,6 +8,8 @@ src/core/advanced_models/ncsnv2.py
 src/core/advanced_models/normalization.py
 src/core/advanced_models/up_or_down_sampling.py
 src/core/advanced_models/utils.py
+src/core/advanced_models/op/fused_act.py
+src/core/advanced_models/op/upfirdn2d.py
 src/core/basic_unet/score_unet.py
 src/forward_operator/radon.py
 src/scripts/generate_dataset.py
