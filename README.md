@@ -31,7 +31,7 @@ pdm run python scripts/generate_dataset.py
 ```
 to generate the dataset, and 
 ```bash
-pdm run python scripts/train_model.py
+pdm run python training/train_score.py
 ```
 to train the model.
 
