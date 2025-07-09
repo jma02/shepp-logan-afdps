@@ -63,4 +63,5 @@ def generate_phantom_dataset(num_samples=10000, size=64, num_ellipses=6):
 # Example usage
 phantoms = generate_phantom_dataset(num_samples=10000, size=128)
 print(f"Generated phantoms tensor shape: {phantoms.shape}")
+os.makedirs("data", exist_ok=True)
 torch.save(phantoms, "data/phantoms.pt")
