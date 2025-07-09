@@ -6,7 +6,7 @@ Author-email: Jonathan Ma <johnma@udel.edu>
 License: shepp-logan-afdps
 Requires-Python: >=3.9
 Description-Content-Type: text/markdown
-Requires-Dist: torch>=2.7.1
+Requires-Dist: torch>=2.3.0
 Requires-Dist: cmocean>=4.0.3
 Requires-Dist: matplotlib>=3.9.4
 Requires-Dist: numpy>=2.0.2
@@ -16,6 +16,7 @@ Requires-Dist: wandb>=0.21.0
 Requires-Dist: scipy>=1.13.1
 Requires-Dist: ml-collections>=0.1.1
 Requires-Dist: torchvision>=0.22.1
+Requires-Dist: pip>=25.1.1
 
 # Shepp-Logan like phantom dataset + AFDPS
 
