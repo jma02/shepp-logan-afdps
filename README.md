@@ -2,15 +2,19 @@
 
 This repository contains the code for generating a Shepp-Logan like phantom dataset and training an AFDPS model on it ([https://arxiv.org/pdf/2506.03979](https://arxiv.org/pdf/2506.03979)).
 
-This is a `pdm` project. 
+This is a `pdm` project. (Or at least I have been experimenting with `pdm`.)
 To run it, it's very easy to use `pdm` to install the dependencies and run the code. 
-You can of course try to run
+You can of course run
 ```
 python -m venv ./venv
 source ./venv/bin/activate
 pip install -e .
 ```
-although I haven't tried this.
+to begin developing and testing the code. 
+(07/09/2025: Looks like this is more stable than `pdm` anyways.)
+(My side note on `pdm` is it's at the least able to resolve dependencies reliably, but it's actual implementation of virtual environments is a little iffy. See a similar pain point with a competing package manager `poetry`: [here](https://discuss.pytorch.org/t/pytorch-cannot-find-libcudnn/205696). You can always just use `pdm` to resolve dependencies, and then use `python -m venv ./venv` to create a virtual environment. This has worked well for me, and when `pdm` virtual environments work, they work well.¯\_(ツ)_/¯ )
+- I think that my personal issues with `pdm` come from our GPU's oneAPI environment. Oh well.
+
 
 To install `pdm`, you can follow the instructions on [https://pdm-project.org/en/latest/](https://pdm-project.org/en/latest/). 
 Once installed, run 
