@@ -42,7 +42,7 @@ def get_config():
 
   # model
   model = config.model
-  model.name = 'ncsnv2'
+  model.name = 'ncsnv2_128'
   model.fourier_scale = 16
   model.scale_by_sigma = False
   model.ema_rate = 0.9999
