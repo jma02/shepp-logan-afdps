@@ -73,7 +73,7 @@ def get_dataloaders(config):
         train_dataset,
         batch_size=config.training.batch_size,
         shuffle=True,
-        num_workers=getattr(config.data, 'num_workers', 4),
+        num_workers=getattr(config.data, 'num_workers', 2),
         pin_memory=True,
         drop_last=True
     )
