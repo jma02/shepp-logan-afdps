@@ -11,7 +11,9 @@ source ./venv/bin/activate
 pip install -e .
 ```
 to begin developing and testing the code. 
-(07/09/2025: Looks like this is more stable than `pdm` anyways.)
+
+(07/09/2025: Looks like the commands above are more stable/reliable than `pdm` anyways.)
+
 (My side note on `pdm` is it's at the least able to resolve dependencies reliably, but it's actual implementation of virtual environments is a little iffy. See a similar pain point with a competing package manager `poetry`: [here](https://discuss.pytorch.org/t/pytorch-cannot-find-libcudnn/205696). You can always just use `pdm` to resolve dependencies, and then use `python -m venv ./venv` to create a virtual environment. This has worked well for me, and when `pdm` virtual environments work, they work well.¯\_(ツ)_/¯ )
 - I think that my personal issues with `pdm` come from our GPU's oneAPI environment. Oh well.
 
