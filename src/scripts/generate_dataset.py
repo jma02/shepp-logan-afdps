@@ -2,6 +2,7 @@ import torch
 import numpy as np
 from skimage.draw import ellipse
 from tqdm import tqdm
+import os
 
 def ellipses_overlap(c1, axes1, c2, axes2, margin=0.0):
     """
